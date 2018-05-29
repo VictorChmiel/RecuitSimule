@@ -65,6 +65,56 @@ def cout(m, n):
     return c
 
 
+def n_coll(m, n):
+    s = 0
+    for e in pos_queens(m, n):
+        collision = False
+        # collisions sur la ligne
+        for i in range (n):
+            if i != e[0] and m[i,e[1]] == 1:
+                collision = True
+        # collisions sur la colonne
+        for j in range(n):
+            if j != e[1] and m[e[0], j] == 1:
+                collision = True
+        # collisions sur la diagonale descendante
+        i = e[0] - 1
+        j = e[1] - 1
+        while i>=0 and j>=0 :
+            if m[i,j] == 1 :
+                collision = True
+            i -=1
+            j-=1
+
+        i = e[0] + 1
+        j = e[1] + 1
+        while i < n and j < n:
+            if m[i, j] == 1:
+                collision = True
+            i += 1
+            j += 1
+        # collisions sur la diagonale descendante
+        i = e[0] - 1
+        j = e[1] + 1
+        while i >= 0 and j < n:
+            if m[i, j] == 1:
+                collision = True
+            i -= 1
+            j += 1
+
+        i = e[0] + 1
+        j = e[1] - 1
+        while i < n and j >=0:
+            if m[i, j] == 1:
+                collision = True
+            i += 1
+            j -= 1
+        if collision:
+            s += 1
+    return s
+
+
+
 def voisin(etat,n):
     vois = np.copy(etat)
     i = rd.randint(0,n-1)
@@ -103,14 +153,44 @@ def recuit_simule(tlimite,n):
                 etat_actuel=suivant
         t = t+1
     print(etat_actuel)
-    print("cout = "+ str(cout(etat_actuel, n)))
-    return cout(etat_actuel)
+    print("nombre de collisions = "+ str(n_coll(etat_actuel, n)))
+    return n_coll(etat_actuel, n)
 
 
+n_tot = 1000
 moy = 0
-for k in range(100):
+nzero = 0
+for k in range(n_tot):
     print(k)
-    moy += recuit_simule(100000, 8)
-print("cout final moyen :" + str(moy/100))
+    n_collision = recuit_simule(100, 11)
+    moy += n_collision
+    if n_collision == 0 :
+        nzero += 1
 
+print("nombre de collisions final en moyenne :" + str(moy/n_tot) + "  et " + str(nzero) + " résultats optimaux sur " + str(n_tot) + " simulations")
+
+
+# 8 reines
+
+# 10000 simulations
+
+# T = 100
+# nombre de collisions final en moyenne :4.352  et 6 résultats optimaux sur 1000 simulations
+
+# T = 1000
+# nombre de collisions final en moyenne :3.922  et 16 résultats optimaux sur 1000 simulations
+
+# 1000 simulations
+
+# 10 reines
+
+# T = 100
+# nombre de collisions final en moyenne :5.779  et 2 résultats optimaux sur 1000 simulations
+
+# T = 1000
+# nombre de collisions final en moyenne :4.829  et 8 résultats optimaux sur 1000 simulations
+
+# Recherche du n maximal solvable pour T = 100 et 1000 simulations
+
+# nombre de collisions final en moyenne :6.562  et 1 résultats optimaux sur 1000 simulations
 
